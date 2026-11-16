@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Tutor — iframe Embedding Demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f5f5f7;
+      color: #1a1a1a;
+    }
+    h1 { font-size: 22px; }
+    p { color: #555; line-height: 1.6; }
+    .card {
+      background: white;
+      border: 1px solid #e2e2e2;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    code {
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+    iframe {
+      border: 1px solid #e2e2e2;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      height: 640px;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Tutor — Kənar sayta iframe ilə inteqrasiya nümunəsi</h1>
+  <p>
+    Bu səhifə, <strong>AI Tutor</strong> widget-inin başqa bir veb sayta necə
+    <code>&lt;iframe&gt;</code> vasitəsilə inteqrasiya oluna biləcəyini göstərir —
+    məsələn bir LMS (Learning Management System) və ya kurs platforması daxilində.
+  </p>
+
+  <div class="card">
+    <h3>Canlı nümunə</h3>
+    <iframe
+      id="ai-tutor-frame"
+      src="/embed/1?pages=6"
+      title="AI Tutor Widget"
+    ></iframe>
+  </div>
+
+  <div class="card">
+    <h3>İnteqrasiya kodu</h3>
+    <pre><code>&lt;iframe
+  src="https://sənin-domenin.com/embed/{material_id}?pages={pages_count}"
+  width="480"
+  height="640"
+  style="border:1px solid #e2e2e2; border-radius:12px;"
+  title="AI Tutor Widget"
+&gt;&lt;/iframe&gt;</code></pre>
+    <p>
+      <code>material_id</code> — <code>/api/materials/upload/</code>
+      endpoint-inin qaytardığı ID. <code>pages</code> — həmin sorğunun
+      <code>pages_count</code> sahəsi.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Responsive hündürlük (postMessage)</h3>
+    <p>
+      Widget, məzmunu dəyişəndə valideyn səhifəyə <code>postMessage</code>
+      ilə öz hündürlüyünü bildirir. Valideyn sayt bunu dinləyib iframe-in
+      hündürlüyünü avtomatik tənzimləyə bilər:
+    </p>
+    <pre><code>window.addEventListener("message", (event) => {
+  if (event.data?.type === "ai-tutor-resize") {
+    document.getElementById("ai-tutor-frame").style.height =
+      event.data.height + "px";
+  }
+});</code></pre>
+  </div>
+
+  <script>
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "ai-tutor-resize") {
+        const frame = document.getElementById("ai-tutor-frame");
+        if (frame) frame.style.height = Math.max(400, event.data.height) + "px";
+      }
+    });
+  </script>
+</body>
+</html>
